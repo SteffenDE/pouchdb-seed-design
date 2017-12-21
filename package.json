@@ -11,15 +11,20 @@
   ],
   "description": "Seed CouchDB's design documents with PouchDB",
   "dependencies": {
+    "clone-deep": "^2.0.1",
     "deep-equal": "^1.0.1",
     "node-extend": "^0.2.0",
     "object-keys-map": "~1.0.1",
     "object-map": "0.0.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "browserify": "^13.0.1",
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-eslint": "^4.0.0",
     "gulp-jshint": "^2.0.0",
     "gulp-mocha": "^2.2.0",
     "gulp-rename": "^1.2.2",

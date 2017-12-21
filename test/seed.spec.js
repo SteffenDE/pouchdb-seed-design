@@ -5,23 +5,29 @@ if(typeof window === 'undefined') {
 }
 var expect = chai.expect;
 
-var db = new PouchDB("http://localhost:5984/pouchdb_seed_test");
+var db = new PouchDB("testdb");
 
 var designDoc1 = {
   person: {
     views: {
-      byFirstName: function (doc) {
-        emit(doc.firstName);
+      byFirstName: {
+        map: function(doc) {
+          emit(doc.firstName);
+        }
       },
-      byLastName: function (doc) {
-        emit(doc.lastName);
+      byLastName: {
+        map: function(doc) {
+          emit(doc.lastName);
+        }
       },
-      byFullName: function (doc) {
-        emit(doc.firstName + " " + doc.lastName);
+      byFullName: {
+        map: function(doc) {
+          emit(doc.firstName + " " + doc.lastName);
+        }
       }
     },
     updates: {
-      firstName: function (doc, req) {
+      firstName: function(doc, req) {
         doc.firstName = req.body;
         return [doc, "ok"];
       }
@@ -72,38 +78,35 @@ describe("pouchdb_seed_design", function() {
   it("should add design docs to an empty database (returning a promise)", function() {
     return previous.then(function() {
       return pouchSeed(db, designDoc1);
-    })
-      .then(function(result) {
-        expect(result[0].id).to.equal("_design/person");
-        return db.get(result[0].id);
-      })
-      .then(function(ddoc) {
-        expect(ddoc.filters.byType).to.be.a('string');
-        expect(ddoc.lists.zoom).to.be.a('string');
-        expect(ddoc.shows.people).to.be.a('string');
-        expect(ddoc.validate_doc_update).to.be.a('string');
-      });
+    }).then(function(result) {
+      expect(result[0].id).to.equal("_design/person");
+      return db.get(result[0].id);
+    }).then(function(ddoc) {
+      expect(ddoc.filters.byType).to.be.a('string');
+      expect(ddoc.lists.zoom).to.be.a('string');
+      expect(ddoc.shows.people).to.be.a('string');
+      expect(ddoc.validate_doc_update).to.be.a('string');
+    });
   });
 
   it("should not try to write over a design document that hasn't changed (with callback)", function() {
-    return previous
-      .then(function() {
-        return new Promise(function(resolve, reject) {
-          pouchSeed(db, designDoc1, function(err, result) {
-            if(err) reject(err);
-            expect(err).to.equal(null);
-            expect(result).to.equal(false);
-            resolve();
-          });
+    return previous.then(function() {
+      return new Promise(function(resolve, reject) {
+        pouchSeed(db, designDoc1).then(function(result) {
+          expect(result).to.equal(false);
+          resolve();
         });
       });
+    });
   });
 
   it("should write over a design document that has changed", function() {
     return previous
       .then(function() {
-        designDoc1.person.views.byLastName = function(doc) {
-          emit("Mr. " + doc.lastName);
+        designDoc1.person.views.byLastName = {
+          map: function(doc) {
+            emit("Mr. " + doc.lastName);
+          }
         };
         return pouchSeed(db, designDoc1);
       })
