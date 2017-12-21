@@ -12,7 +12,7 @@ const rimraf = require("rimraf");
 // const streamify = require("gulp-streamify");
 
 gulp.task("lint", function() {
-  return gulp.src(["./*.js"])
+  return gulp.src(["./src/*.js"])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -28,7 +28,7 @@ gulp.task("clean", ["test-node"], function(cb) {
 });
 
 gulp.task("build", ["clean"], function() {
-  gulp.src("./index.js")
+  gulp.src("./src/index.js")
     .pipe(babel({
       presets: ["env"]
     }))

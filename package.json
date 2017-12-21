@@ -1,6 +1,7 @@
 {
   "name": "pouchdb-seed-design",
   "version": "0.3.0",
+  "main": "./lib/index.js",
   "author": "Colin Skow",
   "keywords": [
     "couchdb",
