@@ -1,7 +1,7 @@
 if(typeof window === 'undefined') {
   var PouchDB = require("pouchdb");
   var chai = require("chai");
-  var pouchSeed = require("../index");
+  var pouchSeed = require("../src/index");
 }
 var expect = chai.expect;
 

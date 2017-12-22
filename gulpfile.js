@@ -24,15 +24,19 @@ gulp.task("test-node", ["lint"], function() {
 });
 
 gulp.task("clean", ["test-node"], function(cb) {
-  rimraf("./dist", cb);
+  rimraf("./lib", cb);
 });
 
 gulp.task("build", ["clean"], function() {
-  gulp.src("./src/index.js")
+  gulp.src("./src/*.js")
     .pipe(babel({
-      presets: ["env"]
+      presets: [["env", {
+        "targets": {
+          "node": "6.10"
+        }
+      }]]
     }))
-    .pipe(gulp.dest("lib"));
+    .pipe(gulp.dest("./lib/"));
 });
 
 // gulp.task("build-browser", ["clean"], function() {
